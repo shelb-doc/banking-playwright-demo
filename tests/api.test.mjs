@@ -7,8 +7,8 @@ import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { createApplication } from '../server.mjs';
 
-async function start(t, databasePath = ':memory:') {
-  const server = createApplication({ databasePath });
+async function start(t, databasePath = ':memory:', options = {}) {
+  const server = createApplication({ databasePath, ...options });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => server.listening
@@ -47,6 +47,51 @@ test('$100 transfer succeeds, balances reconcile, and receipt is returned', asyn
   assert.equal(body.accounts[1].balanceCents, 830000);
   assert.equal(body.accounts.reduce((sum, a) => sum + a.balanceCents, 0), 1065000);
   assert.equal((await app.dashboard()).transfers.length, 1);
+});
+
+test('HTTPS hosting allows the configured origin without trusting forwarded headers', async (t) => {
+  const app = await start(t, ':memory:', { publicOrigin: 'https://demo.onrender.com' });
+  const accepted = await app.request('/api/transfers', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Origin: 'https://demo.onrender.com' },
+    body: JSON.stringify(validTransfer),
+  });
+  assert.equal(accepted.status, 200);
+  assert.equal(accepted.body.accounts[0].balanceCents, 235000);
+  const before = await app.dashboard();
+  for (const origin of ['https://other.example', 'http://demo.onrender.com']) {
+    const rejected = await app.request('/api/transfers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: origin,
+        'X-Forwarded-Host': new URL(origin).host,
+        'X-Forwarded-Proto': new URL(origin).protocol.slice(0, -1),
+      },
+      body: JSON.stringify({ ...validTransfer, requestId: 'hosted-rejected-001' }),
+    });
+    assertError(rejected, 403, 'Cross-origin transfers are not allowed.');
+    assert.deepEqual(await app.dashboard(), before);
+  }
+});
+
+test('local HTTP origin is accepted without hosting configuration', async (t) => {
+  const app = await start(t);
+  const result = await app.request('/api/transfers', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Origin: `http://127.0.0.1:${app.server.address().port}`,
+    },
+    body: JSON.stringify(validTransfer),
+  });
+  assert.equal(result.status, 200);
+});
+
+test('invalid hosting origins fail at startup', () => {
+  for (const publicOrigin of ['invalid-url', 'ftp://demo.example']) {
+    assert.throws(() => createApplication({ databasePath: ':memory:', publicOrigin }), TypeError);
+  }
 });
 
 test('retrying a request does not debit twice; conflicting reuse fails', async (t) => {

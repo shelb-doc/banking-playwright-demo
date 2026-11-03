@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: banking-playwright-demo
+    runtime: node
+    plan: free
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/dashboard
+    envVars:
+      - key: NODE_VERSION
+        value: 22.22.0
+      - key: HOST
+        value: 0.0.0.0
+      - key: DB_PATH
+        value: ":memory:"

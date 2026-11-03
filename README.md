@@ -18,8 +18,31 @@ savings become **$8,300.00**, a success confirmation with a transaction ID,
 and a completed activity entry.
 
 The database is stored in `data\bank.sqlite` and survives restarts.
-`PORT` and `DB_PATH` environment variables override the defaults.
+`PORT`, `HOST`, and `DB_PATH` environment variables override the defaults.
 Use `DB_PATH=:memory:` for an ephemeral demo.
+
+## Free hosting on Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/shelb-doc/banking-playwright-demo)
+
+1. Push this repository, then click **Deploy to Render** and sign in with GitHub.
+2. Approve access to this repository and create the Blueprint using `render.yaml`.
+3. Confirm the web service uses the **Free** plan. No paid database or disk is needed.
+4. After deployment succeeds, open the service's Render URL. GitHub Pages does not
+   run this Node.js backend and is not the working app's URL.
+
+The Blueprint pins Node.js, binds to `0.0.0.0` on Render's assigned `PORT`,
+and health-checks `/api/dashboard`. Render supplies `RENDER_EXTERNAL_URL` so
+same-origin transfers work over HTTPS behind its proxy. On another host, set
+`PUBLIC_ORIGIN` to the public URL (for example `https://demo.example.com`).
+Do not set it to the GitHub Pages URL.
+
+**Free-demo limitations:** SQLite runs in memory and all balances and transfers
+reset whenever the process restarts, redeploys, or spins down. Free services
+sleep after 15 minutes without traffic; waking can take about a minute. Render
+also applies monthly free usage limits. All visitors share the same simulated
+accounts and can change the demo balances. Never enter real financial or
+personal data. This configuration is not suitable for production banking.
 
 ## Verify the challenge
 
@@ -83,8 +106,9 @@ receipt without moving money twice; different details return 409.
 
 ## Demo boundaries
 
-The server binds to loopback only. Accounts are seeded demo accounts shared by
-all local visitors. There is intentionally no login or multi-user authorization.
-Do not expose this service publicly or use it for real funds. Production would
+The server binds to loopback by default; the Render demo explicitly enables public
+access. Accounts are seeded demo accounts shared by all visitors. There is
+intentionally no login or multi-user authorization. Public hosting is only for
+disposable, simulated data; never use it for real funds. Production would
 require authentication, account ownership checks, stronger request controls,
 auditing, operational monitoring, and a production-grade financial ledger.

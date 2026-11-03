@@ -15,7 +15,11 @@ class RequestError extends Error {
   }
 }
 
-export function createApplication({ databasePath = join(root, 'data', 'bank.sqlite') } = {}) {
+export function createApplication({ databasePath = join(root, 'data', 'bank.sqlite'), publicOrigin } = {}) {
+  const externalUrl = publicOrigin ? new URL(publicOrigin) : undefined;
+  if (externalUrl && !['http:', 'https:'].includes(externalUrl.protocol)) {
+    throw new TypeError('Public origin must use HTTP or HTTPS.');
+  }
   if (databasePath !== ':memory:') mkdirSync(dirname(databasePath), { recursive: true });
   const db = new DatabaseSync(databasePath);
   db.exec(`
@@ -120,7 +124,8 @@ export function createApplication({ databasePath = join(root, 'data', 'bank.sqli
       const path = new URL(req.url, 'http://localhost').pathname;
       if (req.method === 'GET' && path === '/api/dashboard') return json(200, dashboard());
       if (req.method === 'POST' && path === '/api/transfers') {
-        if (req.headers.origin && req.headers.origin !== `http://${req.headers.host}`) {
+        const expectedOrigin = externalUrl?.origin || `http://${req.headers.host}`;
+        if (req.headers.origin && req.headers.origin !== expectedOrigin) {
           throw new RequestError(403, 'Cross-origin transfers are not allowed.');
         }
         if (req.headers['content-type']?.split(';')[0] !== 'application/json') {
@@ -157,8 +162,12 @@ export function createApplication({ databasePath = join(root, 'data', 'bank.sqli
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const server = createApplication({ databasePath: process.env.DB_PATH || undefined });
-  server.listen(Number(process.env.PORT || 3000), '127.0.0.1', () => {
-    console.log(`Transfer demo ready at http://127.0.0.1:${server.address().port}`);
+  const server = createApplication({
+    databasePath: process.env.DB_PATH || undefined,
+    publicOrigin: process.env.PUBLIC_ORIGIN || process.env.RENDER_EXTERNAL_URL,
+  });
+  const host = process.env.HOST || '127.0.0.1';
+  server.listen(Number(process.env.PORT || 3000), host, () => {
+    console.log(`Transfer demo ready at http://${host}:${server.address().port}`);
   });
 }
