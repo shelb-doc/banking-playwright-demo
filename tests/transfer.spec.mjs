@@ -1,13 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 test('transfer $100 and verify receipt, balances, history, and persistence on reload', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/#transfer');
   await expect(page.locator('#checking-balance')).toHaveText('$2,450.00');
   await expect(page.locator('#savings-balance')).toHaveText('$8,200.00');
   await page.getByLabel('From account').selectOption('checking');
   await page.getByLabel('To account').selectOption('savings');
-  await page.getByLabel('Amount', { exact: false }).fill('100.00');
-  await page.getByRole('button', { name: /Transfer \$100.00/ }).click();
+  await page.getByLabel('Amount (USD)', { exact: true }).fill('100.00');
+  await page.getByRole('button', { name: 'Review transfer', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('$100.00 from Everyday Checking to High-Yield Savings');
+  await page.getByRole('button', { name: 'Confirm transfer', exact: true }).click();
   const confirmation = page.getByRole('status');
   await expect(confirmation).toBeVisible();
   await expect(confirmation).toContainText('Transfer successful');
@@ -23,11 +25,11 @@ test('transfer $100 and verify receipt, balances, history, and persistence on re
   await expect(page.locator('.activity-row')).toHaveCount(1);
 
   await page.getByLabel('To account').selectOption('checking');
-  await page.getByRole('button', { name: /Transfer \$100.00/ }).click();
+  await page.getByRole('button', { name: 'Review transfer', exact: true }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Choose two different accounts.' })).toBeVisible();
   await page.getByLabel('To account').selectOption('savings');
   await page.locator('#amount').fill('99999.00');
-  await page.getByRole('button', { name: /Transfer/ }).click();
+  await page.getByRole('button', { name: 'Review transfer', exact: true }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Insufficient funds' })).toBeVisible();
   await expect(page.locator('.activity-row')).toHaveCount(1);
 

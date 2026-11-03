@@ -3,60 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Evergreen | Move money</title>
+  <title>Evergreen | Demo banking</title>
   <link rel="stylesheet" href="/styles.css">
   <script type="module" src="/app.js"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <aside class="sidebar">
-    <a class="brand" href="/" aria-label="Evergreen home"><span class="brand-mark">e</span> evergreen<span class="brand-dot">.</span></a>
-    <div class="workspace-label">PERSONAL BANKING</div>
+    <a class="brand" href="#overview" aria-label="Evergreen home"><span class="brand-mark">e</span> evergreen.</a>
+    <div class="workspace-label">YOUR DEMO WORKSPACE</div>
     <nav aria-label="Main navigation">
-      <a href="#accounts"><span aria-hidden="true">&#9638;</span> Overview</a>
-      <a href="#transfer" class="active" aria-current="page"><span aria-hidden="true">&#8644;</span> Move money <span class="nav-arrow">&rarr;</span></a>
-      <a href="#activity"><span aria-hidden="true">&#9776;</span> Activity</a>
+      <a href="#overview"><span aria-hidden="true">&#9638;</span> Overview</a>
+      <a href="#transfer"><span aria-hidden="true">&#8644;</span> Move money</a>
+      <a href="#activity"><span aria-hidden="true">&#9776;</span> Transactions</a>
+      <a href="#payments"><span aria-hidden="true">&#9745;</span> Bills &amp; payments</a>
+      <a href="#recipients"><span aria-hidden="true">&#9825;</span> Recipients</a>
+      <a href="#cards"><span aria-hidden="true">&#9635;</span> Cards</a>
+      <a href="#test-lab"><span aria-hidden="true">&#9881;</span> Test lab</a>
     </nav>
     <div class="sidebar-bottom">
-      <div class="demo-note"><span class="live-dot"></span> A safe place to try things<p>Demo banking. Real peace of mind.<br>No real money moves here.</p></div>
-      <div class="profile"><div class="avatar">JD</div><div>Jamie Davis<small>Personal account</small></div><span class="profile-chevron">&#8964;</span></div>
+      <div class="demo-note"><span class="live-dot"></span> Your own little sandbox<p>Isolated to this browser.<br>Simulated funds. No real banking.</p></div>
+      <div class="profile"><div class="avatar">JD</div><div>Jamie Davis<small>Demo persona</small></div></div>
     </div>
   </aside>
   <div class="main-shell">
-    <header class="topbar"><span>Personal banking <span class="breadcrumb">/</span> <strong>Move money</strong></span><span class="demo-badge"><span class="live-dot"></span> Demo environment</span></header>
-    <main>
-      <div class="page-heading"><div class="eyebrow">YOUR MONEY, IN MOTION</div><h1>A little move.<br>A step forward.</h1><p>Move money between your accounts. Simple as that.</p></div>
-      <section id="accounts" class="accounts" aria-label="Your accounts" aria-busy="true">
-        <article class="account-card checking"><div class="account-top"><span class="account-icon" aria-hidden="true">&#9638;</span><span>EVERYDAY SPENDING</span><span class="account-currency">USD</span></div><h2>Everyday Checking <span>&bull;&bull; 4829</span></h2><p class="balance" id="checking-balance">Loading...</p><div class="account-foot"><span>Available balance</span><span class="account-pill">Checking</span></div></article>
-        <article class="account-card savings"><div class="account-top"><span class="account-icon" aria-hidden="true">&#8599;</span><span>ROOM TO GROW</span><span class="account-currency">USD</span></div><h2>High-Yield Savings <span>&bull;&bull; 9012</span></h2><p class="balance" id="savings-balance">Loading...</p><div class="account-foot"><span>Available balance</span><span class="account-pill">Savings</span></div></article>
-      </section>
-      <div class="content-grid">
-        <section class="panel transfer-panel" id="transfer">
-          <div class="panel-heading"><div><h2>Make a transfer</h2><p>Between your accounts, without the wait.</p></div><span class="round-icon" aria-hidden="true">&#8644;</span></div>
-          <div id="load-error" class="error" role="alert" hidden></div>
-          <form id="transfer-form">
-            <label for="from-account">From account</label>
-            <select id="from-account" name="fromAccount" required disabled><option value="">Loading accounts...</option></select>
-            <div class="transfer-divider"><span aria-hidden="true">&darr;</span></div>
-            <label for="to-account">To account</label>
-            <select id="to-account" name="toAccount" required disabled><option value="">Loading accounts...</option></select>
-            <label for="amount" class="amount-label">Amount <span>USD</span></label>
-            <div class="amount-input"><span aria-hidden="true">$</span><input id="amount" name="amount" type="text" inputmode="decimal" value="100.00" pattern="[0-9]+(\.[0-9]{1,2})?" maxlength="12" required aria-describedby="amount-help"></div>
-            <p class="field-help" id="amount-help">No fees. Every cent stays yours.</p>
-            <div class="transfer-meta"><span>Transfer speed</span><strong><span class="live-dot"></span> Instant</strong></div>
-            <p id="transfer-error" class="error" role="alert" hidden></p>
-            <button type="submit" id="submit-transfer" disabled>Transfer $100.00 <span aria-hidden="true">&rarr;</span></button>
-            <p class="security-note"><span aria-hidden="true">&#9671;</span> Secure transfer between your Evergreen accounts</p>
-          </form>
-          <section id="confirmation" class="confirmation" role="status" aria-live="polite" tabindex="-1" hidden></section>
+    <header class="topbar"><span>Personal banking <span class="breadcrumb">/</span> <strong id="page-title">Overview</strong></span><span class="demo-badge"><span class="live-dot"></span> Isolated demo session</span></header>
+    <main id="main" tabindex="-1">
+      <div class="page-heading"><div class="eyebrow">A LITTLE CLARITY. A LOT OF POSSIBILITY.</div><h1 id="page-heading">Good morning, Jamie.</h1><p id="page-description">Your everyday, a little more in balance.</p></div>
+      <p class="demo-banner">Banking playground &mdash; fictional accounts only. This browser's data expires after 24 hours or a server restart on free hosting.</p>
+      <div id="load-error" class="error" role="alert" hidden></div>
+      <div id="action-error" class="error" role="alert" tabindex="-1" hidden></div>
+      <section id="confirmation" class="confirmation" role="status" aria-live="polite" tabindex="-1" hidden></section>
+      <div id="busy-message" class="busy-message" hidden>Working on it&hellip; Please wait before trying again.</div>
+      <div id="workspace" aria-busy="true">
+        <section id="accounts" class="accounts" aria-label="Your accounts" aria-busy="true">
+          <article class="account-card checking"><div class="account-top"><span>EVERYDAY SPENDING</span><span>USD</span></div><h2>Everyday Checking <span>&bull;&bull; 4829</span></h2><p class="balance" id="checking-balance">Loading...</p><div class="account-foot"><span>Available balance</span><a href="#activity" data-account-link="checking">View transactions &rarr;</a></div></article>
+          <article class="account-card savings"><div class="account-top"><span>ROOM TO GROW</span><span>USD</span></div><h2>High-Yield Savings <span>&bull;&bull; 9012</span></h2><p class="balance" id="savings-balance">Loading...</p><div class="account-foot"><span>Available balance</span><a href="#activity" data-account-link="savings">View transactions &rarr;</a></div></article>
         </section>
-        <aside class="right-column">
-          <section class="insight-card"><div class="insight-art" aria-hidden="true"><div class="art-orbit"></div><span>&#8599;</span><div class="art-spark">+</div></div><div class="eyebrow">SMALL MOVES. BIG POSSIBILITIES.</div><h2>Good things<br>start with a transfer.</h2><p>Building a rainy-day fund or planning your next chapter? Your money is ready when you are.</p><div class="insight-foot"><span class="live-dot"></span> Always moving forward</div></section>
-          <section class="help-card"><span class="help-icon" aria-hidden="true">?</span><div><h3>Made to be straightforward.</h3><p>Transfers are instant and fee-free. Your balances update as soon as you're done.</p></div></section>
-        </aside>
+
+        <section data-view="overview" class="view">
+          <div class="summary-grid">
+            <article class="panel metric"><span>Total available</span><strong id="total-balance">Loading...</strong><small>Across your two demo accounts</small></article>
+            <article class="panel metric"><span>Demo spending</span><strong id="total-spending">Loading...</strong><small>Payments &amp; card purchases, all time</small></article>
+            <article class="panel metric"><span>Bills remaining</span><strong id="bills-remaining">Loading...</strong><small id="bills-count">Loading...</small></article>
+          </div>
+          <div class="content-grid">
+            <section class="panel"><div class="panel-heading"><div><h2>Where your money goes</h2><p>Actual spending in this demo session.</p></div><span class="round-icon" aria-hidden="true">&#8599;</span></div><div id="spending-chart"></div></section>
+            <section class="insight-card"><div class="eyebrow">SMALL MOVES. BIG POSSIBILITIES.</div><h2>Make room<br>for what's next.</h2><p>Move money, pay a fictional bill, or try a card purchase. Every action is yours to explore.</p><a class="button" href="#transfer">Move money &rarr;</a><a class="text-link" href="#test-lab">Explore the test lab &rarr;</a></section>
+          </div>
+        </section>
+
+        <section data-view="transfer" class="view" hidden>
+          <div class="content-grid">
+            <section class="panel transfer-panel">
+              <div class="panel-heading"><div><h2>Make a transfer</h2><p>Between your accounts, without the wait.</p></div><span class="round-icon" aria-hidden="true">&#8644;</span></div>
+              <form id="transfer-form">
+                <label for="from-account">From account</label><select id="from-account" name="fromAccount" data-accounts required disabled></select>
+                <div class="transfer-divider" aria-hidden="true">&darr;</div>
+                <label for="to-account">To account</label><select id="to-account" name="toAccount" data-accounts required disabled></select>
+                <label for="amount">Amount (USD)</label><input id="amount" name="amount" type="text" inputmode="decimal" value="100.00" pattern="[0-9]+(\.[0-9]{1,2})?" maxlength="12" required aria-describedby="amount-help">
+                <p class="field-help" id="amount-help">No fees. Every cent stays yours.</p>
+                <label for="transfer-date">When</label><input id="transfer-date" name="dueDate" type="date" aria-describedby="schedule-help">
+                <p class="field-help" id="schedule-help">Leave blank for instant. Scheduled transfers run only when you process them in the Test lab; no funds are reserved.</p>
+                <p id="transfer-error" class="error" role="alert" hidden></p>
+                <button type="submit" id="submit-transfer" disabled>Review transfer</button>
+              </form>
+            </section>
+            <section class="panel"><div class="panel-heading"><div><h2>Scheduled transfers</h2><p>One-time demo transfers. No background processing.</p></div></div><div id="schedule-list"></div></section>
+          </div>
+        </section>
+
+        <section data-view="activity" class="view panel" hidden>
+          <div class="panel-heading"><div><h2>Find a transaction</h2><p>Transfers, bills, recipients, and card purchases.</p></div></div>
+          <div class="filter-grid">
+            <div><label for="history-search">Search transactions</label><input id="history-search" type="search" placeholder="Name, type, or confirmation ID"></div>
+            <div><label for="history-account">Account</label><select id="history-account"><option value="">All accounts</option><option value="checking">Everyday Checking</option><option value="savings">High-Yield Savings</option></select></div>
+            <div><label for="history-kind">Type</label><select id="history-kind"><option value="">All types</option><option value="transfer">Transfers</option><option value="bill">Bills</option><option value="recipient">Recipient payments</option><option value="card">Card purchases</option></select></div>
+          </div>
+          <p class="field-help">Select a transaction below to see its receipt and account details.</p>
+        </section>
+
+        <section data-view="payments" class="view" hidden>
+          <div class="content-grid">
+            <section class="panel"><div class="panel-heading"><div><h2>Your demo bills</h2><p>One seeded billing cycle. Reset the demo to try again.</p></div></div><div id="bill-list"></div></section>
+            <section class="panel">
+              <div class="panel-heading"><div><h2>Pay a recipient</h2><p>Fictional destinations. Nothing leaves this demo.</p></div></div>
+              <form id="payment-form">
+                <label for="payment-account">Pay from</label><select id="payment-account" name="fromAccount" data-accounts required disabled></select>
+                <label for="payment-recipient">Recipient</label><select id="payment-recipient" name="targetId" required disabled></select>
+                <p class="field-help"><a href="#recipients" class="text-link">Add a demo recipient &rarr;</a></p>
+                <label for="payment-amount">Payment amount (USD)</label><input id="payment-amount" name="amount" inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,2})?" maxlength="12" required>
+                <button type="submit" disabled>Review payment</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section data-view="recipients" class="view" hidden>
+          <div class="content-grid">
+            <section class="panel"><div class="panel-heading"><div><h2>People in your demo</h2><p>Saved destinations, isolated to this browser.</p></div></div><div id="recipient-list"></div></section>
+            <section class="panel">
+              <div class="panel-heading"><div><h2>Add a recipient</h2><p>Use invented names and account digits only.</p></div></div>
+              <form id="recipient-form">
+                <label for="recipient-name">Demo recipient name</label><input id="recipient-name" name="name" minlength="2" maxlength="60" required placeholder="Alex Demo">
+                <label for="recipient-number">Last four demo account digits</label><input id="recipient-number" name="number" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required placeholder="1234">
+                <button type="submit" disabled>Save recipient</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section data-view="cards" class="view" hidden>
+          <div class="content-grid">
+            <section class="panel">
+              <div class="virtual-card"><span>evergreen. <small>DEMO DEBIT</small></span><div class="card-chip" aria-hidden="true"></div><strong>&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 6248</strong><span>JAMIE DAVIS <small id="card-state">Loading...</small></span></div>
+              <p class="field-help">Not a usable card number. Linked to Everyday Checking.</p>
+              <form id="card-form">
+                <label class="checkbox-label"><input id="card-frozen" name="frozen" type="checkbox"> Freeze demo card</label>
+                <label for="card-limit">Daily spending limit (USD, UTC day)</label><input id="card-limit" name="limit" inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,2})?" maxlength="12" required>
+                <p id="card-spent" class="field-help"></p>
+                <button type="submit" disabled>Save card controls</button>
+              </form>
+            </section>
+            <section class="panel"><div class="panel-heading"><div><h2>Try a card purchase</h2><p>Test frozen cards, limits, and insufficient funds.</p></div></div>
+              <form id="purchase-form"><label for="purchase-amount">Purchase amount (USD)</label><input id="purchase-amount" name="amount" inputmode="decimal" pattern="[0-9]+(\.[0-9]{1,2})?" value="25.00" maxlength="12" required><button type="submit" disabled>Review demo purchase</button></form>
+              <div class="help-card"><h3>No merchant. No real charge.</h3><p>This records a simulated purchase and reduces your demo checking balance.</p></div>
+            </section>
+          </div>
+        </section>
+
+        <section data-view="test-lab" class="view" hidden>
+          <div class="lab-banner"><span class="eyebrow">BUILT TO BE TESTED</span><h2>Try the happy path. Then break it.</h2><p>These controls affect only your browser's demo session, not other visitors.</p></div>
+          <div class="content-grid">
+            <section class="panel"><div class="panel-heading"><div><h2>Response scenarios</h2><p>Delay banking actions or fail one action. Page loads and lab controls are unaffected.</p></div></div>
+              <form id="controls-form">
+                <label for="demo-delay">Response speed</label><select id="demo-delay" name="delayMs"><option value="0">Normal</option><option value="1500">Slow (1.5 seconds)</option></select>
+                <label class="checkbox-label"><input id="demo-failure" name="failNext" type="checkbox"> Fail the next banking action once (503)</label>
+                <button type="submit" disabled>Apply test settings</button>
+              </form>
+            </section>
+            <section class="panel"><div class="panel-heading"><div><h2>Run scheduled transfers</h2><p>Simulate processing through a date. Failed transfers do not retry automatically.</p></div></div>
+              <form id="process-form"><label for="process-date">Process through (UTC date)</label><input id="process-date" name="asOf" type="date" required><button type="submit" disabled>Process due transfers</button></form>
+            </section>
+            <section class="panel"><div class="panel-heading"><div><h2>A little sample activity</h2><p>Add three demo card purchases ($80 total). Repeating this won't charge twice. Card controls still apply.</p></div></div><button id="sample-button" class="secondary" disabled>Load sample transactions</button></section>
+            <section class="panel"><div class="panel-heading"><div><h2>Back to a fresh start</h2><p>Clear only your session's transfers, payments, recipients, schedules, and card settings. Restore seeded balances and bills.</p></div></div><button id="reset-button" class="danger" disabled>Reset my demo</button></section>
+          </div>
+        </section>
+
+        <section class="panel activity-panel" id="history-panel"><div class="activity-heading"><div><h2 id="activity-title">Recent activity</h2><p id="history-count">Your latest money moves, all in one place.</p></div><a class="text-link" href="#activity">All transactions &rarr;</a></div><div id="activity-list"><p class="empty-state">Loading activity...</p></div></section>
       </div>
-      <section class="panel activity-panel" id="activity"><div class="activity-heading"><div><h2>Recent activity</h2><p>Your latest money moves, all in one place.</p></div><span class="activity-tag">Internal transfers</span></div><div id="activity-list"><p class="empty-state">Loading activity...</p></div></section>
       <footer><span class="footer-brand">evergreen.</span><span>Built for your everyday. Ready for your next.</span><span>Demo only &middot; Not a real bank</span></footer>
     </main>
   </div>
+  <dialog id="review-dialog" aria-labelledby="review-title"><h2 id="review-title">Review transfer</h2><p id="review-detail"></p><p class="field-help">Simulated money only. Check the details before confirming.</p><div class="dialog-actions"><button id="review-cancel" class="secondary">Go back</button><button id="review-confirm">Confirm transfer</button></div></dialog>
+  <dialog id="receipt-dialog" aria-labelledby="receipt-title"><h2 id="receipt-title">Transaction details</h2><div id="receipt-detail"></div><button id="receipt-close">Close receipt</button></dialog>
 </body>
 </html>

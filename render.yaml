@@ -5,7 +5,7 @@ services:
     plan: free
     buildCommand: npm ci --omit=dev
     startCommand: npm start
-    healthCheckPath: /api/dashboard
+    healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 22.22.0
