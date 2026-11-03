@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Evergreen | Move money</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Evergreen home"><span class="brand-mark">e</span> evergreen<span class="brand-dot">.</span></a>
+    <div class="workspace-label">PERSONAL BANKING</div>
+    <nav aria-label="Main navigation">
+      <a href="#accounts"><span aria-hidden="true">&#9638;</span> Overview</a>
+      <a href="#transfer" class="active" aria-current="page"><span aria-hidden="true">&#8644;</span> Move money <span class="nav-arrow">&rarr;</span></a>
+      <a href="#activity"><span aria-hidden="true">&#9776;</span> Activity</a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="demo-note"><span class="live-dot"></span> A safe place to try things<p>Demo banking. Real peace of mind.<br>No real money moves here.</p></div>
+      <div class="profile"><div class="avatar">JD</div><div>Jamie Davis<small>Personal account</small></div><span class="profile-chevron">&#8964;</span></div>
+    </div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar"><span>Personal banking <span class="breadcrumb">/</span> <strong>Move money</strong></span><span class="demo-badge"><span class="live-dot"></span> Demo environment</span></header>
+    <main>
+      <div class="page-heading"><div class="eyebrow">YOUR MONEY, IN MOTION</div><h1>A little move.<br>A step forward.</h1><p>Move money between your accounts. Simple as that.</p></div>
+      <section id="accounts" class="accounts" aria-label="Your accounts" aria-busy="true">
+        <article class="account-card checking"><div class="account-top"><span class="account-icon" aria-hidden="true">&#9638;</span><span>EVERYDAY SPENDING</span><span class="account-currency">USD</span></div><h2>Everyday Checking <span>&bull;&bull; 4829</span></h2><p class="balance" id="checking-balance">Loading...</p><div class="account-foot"><span>Available balance</span><span class="account-pill">Checking</span></div></article>
+        <article class="account-card savings"><div class="account-top"><span class="account-icon" aria-hidden="true">&#8599;</span><span>ROOM TO GROW</span><span class="account-currency">USD</span></div><h2>High-Yield Savings <span>&bull;&bull; 9012</span></h2><p class="balance" id="savings-balance">Loading...</p><div class="account-foot"><span>Available balance</span><span class="account-pill">Savings</span></div></article>
+      </section>
+      <div class="content-grid">
+        <section class="panel transfer-panel" id="transfer">
+          <div class="panel-heading"><div><h2>Make a transfer</h2><p>Between your accounts, without the wait.</p></div><span class="round-icon" aria-hidden="true">&#8644;</span></div>
+          <div id="load-error" class="error" role="alert" hidden></div>
+          <form id="transfer-form">
+            <label for="from-account">From account</label>
+            <select id="from-account" name="fromAccount" required disabled><option value="">Loading accounts...</option></select>
+            <div class="transfer-divider"><span aria-hidden="true">&darr;</span></div>
+            <label for="to-account">To account</label>
+            <select id="to-account" name="toAccount" required disabled><option value="">Loading accounts...</option></select>
+            <label for="amount" class="amount-label">Amount <span>USD</span></label>
+            <div class="amount-input"><span aria-hidden="true">$</span><input id="amount" name="amount" type="text" inputmode="decimal" value="100.00" pattern="[0-9]+(\.[0-9]{1,2})?" maxlength="12" required aria-describedby="amount-help"></div>
+            <p class="field-help" id="amount-help">No fees. Every cent stays yours.</p>
+            <div class="transfer-meta"><span>Transfer speed</span><strong><span class="live-dot"></span> Instant</strong></div>
+            <p id="transfer-error" class="error" role="alert" hidden></p>
+            <button type="submit" id="submit-transfer" disabled>Transfer $100.00 <span aria-hidden="true">&rarr;</span></button>
+            <p class="security-note"><span aria-hidden="true">&#9671;</span> Secure transfer between your Evergreen accounts</p>
+          </form>
+          <section id="confirmation" class="confirmation" role="status" aria-live="polite" tabindex="-1" hidden></section>
+        </section>
+        <aside class="right-column">
+          <section class="insight-card"><div class="insight-art" aria-hidden="true"><div class="art-orbit"></div><span>&#8599;</span><div class="art-spark">+</div></div><div class="eyebrow">SMALL MOVES. BIG POSSIBILITIES.</div><h2>Good things<br>start with a transfer.</h2><p>Building a rainy-day fund or planning your next chapter? Your money is ready when you are.</p><div class="insight-foot"><span class="live-dot"></span> Always moving forward</div></section>
+          <section class="help-card"><span class="help-icon" aria-hidden="true">?</span><div><h3>Made to be straightforward.</h3><p>Transfers are instant and fee-free. Your balances update as soon as you're done.</p></div></section>
+        </aside>
+      </div>
+      <section class="panel activity-panel" id="activity"><div class="activity-heading"><div><h2>Recent activity</h2><p>Your latest money moves, all in one place.</p></div><span class="activity-tag">Internal transfers</span></div><div id="activity-list"><p class="empty-state">Loading activity...</p></div></section>
+      <footer><span class="footer-brand">evergreen.</span><span>Built for your everyday. Ready for your next.</span><span>Demo only &middot; Not a real bank</span></footer>
+    </main>
+  </div>
+</body>
+</html>
